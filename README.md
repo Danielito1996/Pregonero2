@@ -44,32 +44,32 @@ Sincroniza el proyecto con Gradle.
 
 Configura dependencias:Asegúrate de tener las siguientes dependencias en build.gradle (*módulo app*):gradle
 
-`kotlin
-// Jetpack Compose
-implementation "androidx.compose.ui:ui:$compose_version"
-implementation "androidx.compose.material3:material3:$compose_version"
-// Google Maps Compose
-implementation "com.google.maps.android:maps-compose:2.11.0"
-implementation "com.google.android.gms:play-services-maps:18.1.0"
-// Dagger Hilt
-implementation "com.google.dagger:hilt-android:$hilt_version"
-kapt "com.google.dagger:hilt-compiler:$hilt_version"
-// Ktor
-implementation "io.ktor:ktor-client-core:$ktor_version"
-implementation "io.ktor:ktor-client-okhttp:$ktor_version"
-implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
-implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
-// Lottie
-implementation "com.airbnb.android:lottie-compose:$lottie_version"
-// IconExtended (ajusta según la fuente)
-implementation "com.malinskiy:materialicons:1.0.0" // Ejemplo
-// Firebase
-implementation platform('com.google.firebase:firebase-bom:32.0.0')
-implementation 'com.google.firebase:firebase-auth'
-implementation 'com.google.firebase:firebase-firestore'
-implementation 'com.google.firebase:firebase-storage'
-// Coil para imágenes
-implementation "io.coil-kt:coil-compose:2.4.0"`
+
+`// Jetpack Compose`
+`implementation "androidx.compose.ui:ui:$compose_version"`
+`implementation "androidx.compose.material3:material3:$compose_version"`
+`// Google Maps Compose`
+`implementation "com.google.maps.android:maps-compose:2.11.0"`
+`implementation "com.google.android.gms:play-services-maps:18.1.0"`
+`// Dagger Hilt`
+`implementation "com.google.dagger:hilt-android:$hilt_version"`
+`kapt "com.google.dagger:hilt-compiler:$hilt_version"`
+`// Ktor`
+`implementation "io.ktor:ktor-client-core:$ktor_version"`
+`implementation "io.ktor:ktor-client-okhttp:$ktor_version"`
+`implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"`
+`implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"`
+`// Lottie`
+`implementation "com.airbnb.android:lottie-compose:$lottie_version"`
+`// IconExtended (ajusta según la fuente)`
+`implementation "com.malinskiy:materialicons:1.0.0" // Ejemplo`
+`// Firebase`
+`implementation platform('com.google.firebase:firebase-bom:32.0.0')`
+`implementation 'com.google.firebase:firebase-auth'`
+`implementation 'com.google.firebase:firebase-firestore'`
+`implementation 'com.google.firebase:firebase-storage'`
+`// Coil para imágenes`
+`implementation "io.coil-kt:coil-compose:2.4.0" `
 
 Configura Firebase:Crea un proyecto en Firebase Console.
 Agrega las claves SHA-1/SHA-256 (*debug y release*) en Project Settings > Your Apps:bash
@@ -82,72 +82,71 @@ Configura Google Maps:Obtén una clave API en Google Cloud Console.
 Agrega la clave en AndroidManifest.xml:xml
 
 `xml
-<meta-data
-    android:name="com.google.android.geo.API_KEY"
-    android:value="TU_CLAVE_API"/>`
+<meta-data`
+`    android:name="com.google.android.geo.API_KEY" `
+`    android:value="TU_CLAVE_API"/>`
 
 *ConfiguraciónDagger Hilt:* Anota la clase Application con `@HiltAndroidApp:kotlin`
 
 `kotlin
-@HiltAndroidApp
-class MainApplication : Application()`
+@HiltAndroidApp`
+`class MainApplication : Application()`
 
 Define módulos para inyectar dependencias:kotlin
 
-`kotlin
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-    @Provides
-    @Singleton
-    fun provideFirestore() = FirebaseFirestore.getInstance()
-    @Provides
-    @Singleton
-    fun provideKtorClient() = HttpClient(OkHttp) {
-        install(ContentNegotiation) { json() }
-    }
-    @Provides
-    @Singleton
-    fun provideQvaPayClient(@Named("ktorClient") client: HttpClient) = QvaPayClient(client)
-}`
+`kotlin @Module`
+`@InstallIn(SingletonComponent::class)`
+`object AppModule {`
+`    @Provides`
+`    @Singleton`
+`    fun provideFirestore() = FirebaseFirestore.getInstance()`
+`    @Provides`
+`    @Singleton`
+`   fun provideKtorClient() = HttpClient(OkHttp) {`
+`        install(ContentNegotiation) { json() }`
+`    }`
+`    @Provides`
+`    @Singleton`
+`    fun provideQvaPayClient(@Named("ktorClient") client: HttpClient) = QvaPayClient(client)`
+`}`
 
 **Ktor:** Configura el cliente Ktor para consumir la APIs.
 
 */Configura autenticación (Google, correo/contraseña, anónima)**:
 `kotlin
-val auth = FirebaseAuth.getInstance()
-val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-    .requestIdToken(getString(R.string.default_web_client_id))
-    .requestEmail()
-    .build()`
+val auth = FirebaseAuth.getInstance()`
+`val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)`
+`    .requestIdToken(getString(R.string.default_web_client_id))`
+`    .requestEmail()`
+`    .build()`
     
 **Google Maps Compose:** Usa mapas offline con caché local:
 
 `kotlin
-@Composable
-fun MapScreen() {
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(23.113, -82.366), 10f)
-    }
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState
-    ) {
-        // Pines para publicaciones (bienes, servicios, eventos)
-    }
-}`
+@Composable`
+`fun MapScreen() {`
+`    val cameraPositionState = rememberCameraPositionState {`
+`        position = CameraPosition.fromLatLngZoom(LatLng(23.113, -82.366), 10f)`
+`    }`
+`    GoogleMap(`
+`        modifier = Modifier.fillMaxSize(),`
+`        cameraPositionState = cameraPositionState`
+`    ) {`
+`        // Pines para publicaciones (bienes, servicios, eventos)`
+`    }`
+`}`
 
 **Lottie:** Usa animaciones para tutoriales offline:
 
 `kotlin
-@Composable
-fun TutorialScreen() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.tutorial_animation))
-    LottieAnimation(
-        composition = composition,
-        iterations = LottieConstants.IterateForever
-    )
-}`
+@Composable`
+`fun TutorialScreen() {`
+`    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.tutorial_animation))`
+`    LottieAnimation(`
+`        composition = composition,`
+`        iterations = LottieConstants.IterateForever`
+`    )`
+`}`
 
 **Uso offline:** Publicaciones, calificaciones y anuncios rápidos se almacenan en Firestore cache. Imágenes se cachean con Coil desde GitHub Pages o Firebase Storage.
 Distribución: APK y datos iniciales (*imágenes, publicaciones, tutoriales*) se distribuyen vía Apklis o "paquete semanal" (USB) para minimizar descargas.
