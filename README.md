@@ -45,10 +45,11 @@ Sincroniza el proyecto con Gradle.
 Configura dependencias:Asegúrate de tener las siguientes dependencias en build.gradle (*módulo app*):gradle
 
 
-```// Jetpack Compose
+```kotlin // Jetpack Compose
    implementation "androidx.compose.ui:ui:$compose_version"
-   implementation "androidx.compose.material3:material3:$compose_version"```
-```// Google Maps Compose```
+   implementation "androidx.compose.material3:material3:$compose_version"
+
+   // Google Maps Compose
 ```implementation "com.google.maps.android:maps-compose:2.11.0"```
 ```implementation "com.google.android.gms:play-services-maps:18.1.0"```
 ```// Dagger Hilt```
